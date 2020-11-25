@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fyh.seckill.dao.GoodsDao">
+
+    <select id="listGoodsVo" resultType="GoodsVo">
+        select g.*, sg.stock_count, sg.start_date, sg.end_date, sg.seckill_price, sg.version
+        from sk_goods_seckill sg
+        left join sk_goods g
+        on g.id = sg.goods_id
+    </select>
+
+    <select id="getGoodsVoByGoodsId" parameterType="long" resultType="GoodsVo">
+        select g.*, sg.stock_count, sg.start_date, sg.end_date, sg.seckill_price, sg.version
+        from sk_goods_seckill sg
+        left join sk_goods g
+        on g.id = sg.goods_id
+        where g.id = #{goodsId}
+    </select>
+
+    <!--stock_count > 0 和 版本号实现乐观锁 防止超卖-->
+    <update id="reduceStockByVersion" parameterType="SeckillGoods">
+        update sk_goods_seckill
+        set stock_count = stock_count - 1, version = version + 1
+        where goods_Id = #{goodsId}
+        and stock_count > 0
+        and version = #{version}
+    </update>
+
+    <select id="getVersionByGoodsId" parameterType="long" resultType="int">
+        select version
+        from sk_goods_seckill
+        where goods_id = #{goodsId}
+    </select>
+
+</mapper>

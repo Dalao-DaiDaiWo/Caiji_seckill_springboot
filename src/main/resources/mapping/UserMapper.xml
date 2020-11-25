@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fyh.seckill.dao.UserDao">
+
+    <select id="getById" parameterType="long" resultType="User">
+        select *
+        from sk_user
+        where id = #{id}
+    </select>
+
+    <update id="updatePassword" parameterType="User">
+        update sk_user set password = #{password} where id = #{id}
+    </update>
+
+</mapper>
